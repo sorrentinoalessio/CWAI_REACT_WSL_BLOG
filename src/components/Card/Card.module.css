@@ -1,0 +1,11 @@
+.card {
+    padding: 2em;
+    background-color: var(--accent-bg);
+    flex-wrap: wrap;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+      display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+}
