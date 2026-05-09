@@ -1,10 +1,11 @@
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from "./RegistrationForm.module.css";
-import {signUp} from "../services/registration.service.js";
+import { signUp } from "../services/registration.service.js";
+import Card from "../Card/Card.jsx";
 
 
 const RegistrationForm = () => {
-    
+
     const [formValue, setFormValue] = useState({
         nome: "",
         email: "",
@@ -67,64 +68,67 @@ const RegistrationForm = () => {
     };
 
     return (
-        <form className={styles.form} onSubmit={handleSubmit}>
+        <Card title="Registrati">
+            <form className={styles.form} onSubmit={handleSubmit}>
 
-            <div className={styles.form_field}>
-                <label htmlFor ="nome">Nome</label>
-                <input
-                    type="text"
-                    placeholder="Nome"
-                    name="nome"
-                    value={formValue.nome}
-                    id="nome"
-                    onChange={handleChange}
-                />
-            </div>
-            <small>{errors.nome}</small>
+                <div className={styles.form_field}>
+                    <label htmlFor="nome">Nome</label>
+                    <input
+                        type="text"
+                        placeholder="Nome"
+                        name="nome"
+                        value={formValue.nome}
+                        id="nome"
+                        onChange={handleChange}
+                    />
+                </div>
+                <small>{errors.nome}</small>
 
-            <div className={styles.form_field}>
-                <label htmlFor="email">Indirizzo email</label>
-                <input
-                    type="text"
-                    placeholder="Email"
-                    name="email"
-                    value={formValue.email}
-                    id="email"
-                    onChange={handleChange}
-                />
-            </div>
-            <small>{errors.email}</small>
+                <div className={styles.form_field}>
+                    <label htmlFor="email">Indirizzo email</label>
+                    <input
+                        type="text"
+                        placeholder="Email"
+                        name="email"
+                        value={formValue.email}
+                        id="email"
+                        onChange={handleChange}
+                    />
+                </div>
+                <small>{errors.email}</small>
 
-            <div className={styles.form_field}>
-                <label htmlFor="password">Password</label>
-                <input
-                    type="password"
-                    placeholder="Password"
-                    name="password"
-                    value={formValue.password}
-                    id="password"
-                    onChange={handleChange}
-                />
-            </div>
-            <small>{errors.password}</small>
+                <div className={styles.form_field}>
+                    <label htmlFor="password">Password</label>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        name="password"
+                        value={formValue.password}
+                        id="password"
+                        onChange={handleChange}
+                    />
+                </div>
+                <small>{errors.password}</small>
 
-            <div className={styles.form_field}>
-                <label htmlFor="confermaPassword">Conferma password</label>
-                <input
-                    type="password"
-                    placeholder="Conferma password"
-                    name="confermaPassword"
-                    value={formValue.confermaPassword}
-                    id="confermaPassword"
-                    onChange={handleChange}
-                />
-            </div>
-            <small>{errors.confermaPassword}</small>
+                <div className={styles.form_field}>
+                    <label htmlFor="confermaPassword">Conferma password</label>
+                    <input
+                        type="password"
+                        placeholder="Conferma password"
+                        name="confermaPassword"
+                        value={formValue.confermaPassword}
+                        id="confermaPassword"
+                        onChange={handleChange}
+                    />
+                </div>
+                <small>{errors.confermaPassword}</small>
 
-            <button type="submit" className={styles.submit_button}>
-                Registrati
-            </button>
-        </form>
+                <button type="submit" className={styles.submit_button}>
+                    Registrati
+                </button>
+
+            </form>
+        </Card>
     );
 };
 

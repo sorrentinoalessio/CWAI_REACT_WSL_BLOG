@@ -1,13 +1,9 @@
-import { useEffect } from "react"
-
-const Header = (props) => {
-
-    return <div><h1>{props.title}</h1>
-    <div><h1>Ciao {props.user.name}</h1></div>
-    </div>
-}
-useEffect (() =>{
-    console.log(color);
-},[color])
-
-export default Header 
+import StyleSheet from "./header.module.scss";
+const Header = () => {
+    return (
+        <header className={StyleSheet.main_header}>
+            <h1>BlogMultiute</h1>
+        </header>
+    )
+} 
+export default Header;
