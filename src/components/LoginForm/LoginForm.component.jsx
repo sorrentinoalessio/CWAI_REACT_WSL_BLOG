@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./LoginForm.module.css";
+import styles from "./LoginForm.module.scss";
 import { signIn } from "../services/login.service.js";
 import Input from "../Input/Input.component.jsx";
 import Card from "../Card/Card";
@@ -62,7 +62,7 @@ const LoginForm = () => {
             if (data.accessToken) {
                 localStorage.setItem("token", data.accessToken);
                 localStorage.setItem("user", JSON.stringify(data.name));
-                navigate("/");
+                navigate("/Posts");
             }
             alert("Login avvenuto: " + JSON.stringify(data));
         } catch (error) {

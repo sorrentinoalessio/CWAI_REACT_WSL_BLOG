@@ -1,0 +1,28 @@
+.tab-container {
+    width: 100% ;
+    margin: auto;
+}
+.tab-button {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-color);
+    opacity: 0.75;
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+    background-color: rgba(var(--secondary-background-rgb), 0.3);
+    transition: background-color 0.3s, color 0.3s;
+
+    &:hover {
+        background-color: var(--secondary-background);
+        opacity: 1;
+    }
+
+    &.active {
+        font-weight: bold;
+        background-color: var(--secondary-background);
+        opacity: 1;
+    }
+}

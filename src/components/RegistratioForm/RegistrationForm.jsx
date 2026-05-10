@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import styles from "./RegistrationForm.module.css";
+import styles from "./RegistrationForm.module.scss";
 import { signUp } from "../services/registration.service.js";
 import Card from "../Card/Card.jsx";
 
