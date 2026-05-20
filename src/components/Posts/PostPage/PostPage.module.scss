@@ -1,0 +1,148 @@
+$page-bg: #f5f7fb;
+$card-bg: #ffffff;
+$primary: #1f6feb;
+$primary-hover: #195ec6;
+$text: #111827;
+$muted: #6b7280;
+$border: #d1d5db;
+
+.page {
+  min-height: 100vh;
+  padding: clamp(16px, 3vw, 28px);
+  background: radial-gradient(circle at 20% 10%, #ffffff 0%, $page-bg 55%);
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.container {
+  width: min(100%, 980px);
+  max-width: 980px;
+  margin: 0 auto;
+  background: $card-bg;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 16px 36px rgba(17, 24, 39, 0.12);
+  padding: clamp(16px, 2.8vw, 28px);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+  color: $text;
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+}
+
+.addButton {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: $primary;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.05s ease;
+
+  &:hover {
+    background: $primary-hover;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.tabsWrap {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 12px;
+  color: $text;
+
+  :global(*) {
+    color: inherit;
+  }
+
+  /* Navigation tabs (works with common Tabs implementations) */
+  :global([role="tablist"]) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  :global([role="tab"]) {
+    border: 1px solid $border;
+    background: #f9fafb;
+    color: $text;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 0;
+  }
+
+  :global([role="tab"]:hover) {
+    border-color: #b9c1cd;
+    background: #f3f4f6;
+  }
+
+  :global([role="tab"][aria-selected="true"]) {
+    background: $primary;
+    border-color: $primary;
+    color: #fff;
+  }
+
+  /* Fallback in case tabs are simple buttons with "active" class */
+  :global(button.active),
+  :global(.active[role="tab"]) {
+    background: $primary;
+    border-color: $primary;
+    color: #fff;
+  }
+
+  :global([role="tabpanel"]) {
+    color: $text;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 12px;
+  }
+
+  .container {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(17, 24, 39, 0.1);
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .addButton {
+    width: 100%;
+  }
+
+  .tabsWrap {
+    :global([role="tablist"]) {
+      flex-direction: column;
+    }
+
+    :global([role="tab"]) {
+      width: 100%;
+    }
+  }
+}

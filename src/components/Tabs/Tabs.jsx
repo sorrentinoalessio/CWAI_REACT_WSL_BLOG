@@ -1,34 +1,37 @@
 import { useState } from "react";
+import { Children } from "react";
 import styles from "./Tabs.module.scss";
 
 export const Tabs = ({ children }) => {
-    const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
 
-    const tabHeaders = [];
-    const tabContents = [];
+  const items = Children.toArray(children);
 
-    children.forEach((child, index) => {
-        tabHeaders.push(
-            <button
-                key={index}
-                className={`${styles["tab-button"]} ${activeTab === index ? styles.active : ""}`}
-                onClick={() => setActiveTab(index)}
-            >
-                {child.props.header}
-            </button>
-        );
+  const tabHeaders = items.map((child, index) => (
+    <button
+      key={index}
+      type="button"
+      role="tab"
+      aria-selected={activeTab === index}
+      className={`${styles["tab-button"]} ${activeTab === index ? styles.active : ""}`}
+      onClick={() => setActiveTab(index)}
+    >
+      {child.props.header}
+    </button>
+  ));
 
-        tabContents.push(child);
-    });
- 
+  return (
+    <section className={styles["tab-container"]}>
+      <div className={styles["tabs-headers"]} role="tablist">
+        {tabHeaders}
+      </div>
+      <div className={styles["tabs-contents"]} role="tabpanel">
+        {items[activeTab]}
+      </div>
+    </section>
+  );
+};
 
-    return <section className={styles["tab-container"]}>
-        <div className={styles["tabs-headers"]}>{tabHeaders}</div>
-        <div className={styles["tabs-contents"]}>{tabContents[activeTab]}</div>
-    </section>;
-}
-
-
-export const TabPanel = ({ header, children }) => {
-    return <div>{children}</div>;
+export const TabPanel = ({ children }) => {
+  return <div>{children}</div>;
 };
