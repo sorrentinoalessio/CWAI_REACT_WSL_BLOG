@@ -35,3 +35,11 @@
     cursor: pointer;
 
 }
+.page {
+  min-height: 100vh;
+  padding: 12px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

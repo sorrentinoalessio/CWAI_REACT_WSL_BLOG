@@ -10,13 +10,16 @@ $danger-border: #fda29b;
 $danger-focus: rgba(180, 35, 24, 0.2);
 
 .card {
-  width: min(100%, 420px);
+  width: 100%;
+  max-width: 420px;
   margin-inline: auto;
   background: $card-bg;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 16px;
   box-shadow: 0 16px 36px rgba(17, 24, 39, 0.12);
   padding: clamp(18px, 4vw, 28px);
+  box-sizing: border-box;
+  overflow: hidden;
 
   h2 {
     margin: 0 0 6px;
@@ -38,6 +41,8 @@ $danger-focus: rgba(180, 35, 24, 0.2);
     border-radius: 10px;
     margin-bottom: 0;
     font-size: 0.95rem;
+    box-sizing: border-box;
+    max-width: 100%;
 
     &:focus {
       outline: none;
@@ -55,31 +60,11 @@ $danger-focus: rgba(180, 35, 24, 0.2);
     color: #fff;
     font-weight: 700;
     cursor: pointer;
+    box-sizing: border-box;
+    max-width: 100%;
 
     &:hover {
       background: $primary-hover;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .card {
-    width: calc(100% - 20px);
-    border-radius: 12px;
-    box-shadow: 0 10px 24px rgba(17, 24, 39, 0.1);
-
-    h2 {
-      margin-bottom: 4px;
-    }
-
-    p {
-      margin-bottom: 14px;
-    }
-
-    input,
-    button {
-      height: 42px;
-      font-size: 0.92rem;
     }
   }
 }
@@ -90,6 +75,7 @@ $danger-focus: rgba(180, 35, 24, 0.2);
   gap: 12px;
   text-align: left;
   width: 100%;
+  min-width: 0;
 }
 
 .form_field {
@@ -97,12 +83,15 @@ $danger-focus: rgba(180, 35, 24, 0.2);
   flex-direction: column;
   gap: 4px;
   width: 100%;
+  min-width: 0;
   align-items: flex-start;
   justify-content: flex-start;
   text-align: left;
 
   input {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   label {
@@ -121,6 +110,8 @@ $danger-focus: rgba(180, 35, 24, 0.2);
   border-radius: 10px;
   font-size: clamp(0.92rem, 1.8vw, 0.96rem);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  max-width: 100%;
 
   &:focus {
     outline: none;
@@ -150,6 +141,9 @@ $danger-focus: rgba(180, 35, 24, 0.2);
   font-weight: 700;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.05s ease;
+  margin-top: 6px;
+  box-sizing: border-box;
+  max-width: 100%;
 
   &:hover {
     background-color: $primary-hover;
@@ -158,8 +152,6 @@ $danger-focus: rgba(180, 35, 24, 0.2);
   &:active {
     transform: translateY(1px);
   }
-
-  margin-top: 6px;
 }
 
 .error_text {
@@ -171,6 +163,26 @@ $danger-focus: rgba(180, 35, 24, 0.2);
 }
 
 @media (max-width: 480px) {
+  .card {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(17, 24, 39, 0.1);
+
+    h2 {
+      margin-bottom: 4px;
+    }
+
+    p {
+      margin-bottom: 14px;
+    }
+
+    input,
+    button {
+      height: 42px;
+      font-size: 0.92rem;
+    }
+  }
+
   .form {
     gap: 10px;
   }

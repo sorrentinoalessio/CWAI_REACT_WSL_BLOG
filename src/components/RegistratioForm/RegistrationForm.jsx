@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import styles from "./RegistrationForm.module.scss";
 import { signUp } from "../services/registration.service.js";
 import Card from "../Card/Card.jsx";
+import { toast } from "react-toastify";
+import { useNavigate } from 'react-router-dom';
 
 
 const RegistrationForm = () => {
+     const navigate = useNavigate();
 
     const [formValue, setFormValue] = useState({
         nome: "",
@@ -37,7 +40,7 @@ const RegistrationForm = () => {
         }
         if (!formValue.email || formValue.email.trim() === "") {
             newErrors.email = "Email obbligatoria";
-        } else if (!formValue.email.includes("@")) {
+        } else if (!formValue.email.includes("@") || !formValue.email.includes(".")) {
             newErrors.email = "Email non valida";
         }
         if (!formValue.password || formValue.password.trim() === "") {
@@ -60,9 +63,11 @@ const RegistrationForm = () => {
                     email: formValue.email,
                     password: formValue.password,
                 });
-                alert("Registrazione avvenuta:", data);
+                toast.success("registrazione avvenuta con successo, conferma la tua email");
+                navigate("/login");
             } catch (error) {
                 setErrors((prev) => ({ ...prev, email: error.message }));
+                toast.error("registrazione fallita");
             }
         }
     };

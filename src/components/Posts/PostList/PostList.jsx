@@ -1,20 +1,41 @@
+import { toast } from "react-toastify";
+import { updatePostStatus } from "../../services/post.service";
 import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./PostList.module.scss";
 
 const STEP = 5;
 
-const PostList = ({ posts = [], user }) => {
-    const [openComments, setOpenComments] = useState({});
-    const [visibleCount, setVisibleCount] = useState(STEP);
-    const loaderRef = useRef(null);
+const PostList = ({ posts = [], user, onPostStatusChange }) => {
+  const [openComments, setOpenComments] = useState({});
+  const [visibleCount, setVisibleCount] = useState(STEP);
+  const [localPosts, setLocalPosts] = useState(posts);
+  const loaderRef = useRef(null);
 
-    const authorName =
-        typeof user === "string" ? user : user?.name || user?.username || "";
+  useEffect(() => {
+    setLocalPosts(posts);
+  }, [posts]);
 
-    const visiblePosts = useMemo(
-        () => posts.slice(0, visibleCount),
-        [posts, visibleCount]
+  const changeStatus = async (postId, newStatus) => {
+    const oldPosts = localPosts;
+
+    setLocalPosts((prev) =>
+      prev.map((p) => (p._id === postId ? { ...p, status: newStatus } : p))
     );
+
+    try {
+      await updatePostStatus(postId, { status: newStatus });
+      onPostStatusChange?.(postId, newStatus); // <- aggiorna anche stato in PostPage
+      toast.success("Stato aggiornato");
+    } catch (err) {
+      setLocalPosts(oldPosts);
+      toast.error(err?.message || "Errore aggiornamento stato");
+    }
+  };
+
+  const visiblePosts = useMemo(
+    () => localPosts.slice(0, visibleCount),
+    [localPosts, visibleCount]
+  );
 
     useEffect(() => {
         setVisibleCount(STEP); // reset quando cambia la lista (tab diversa)
@@ -75,6 +96,21 @@ const PostList = ({ posts = [], user }) => {
                                 ) : (
                                     <span className={styles.noTags}>Nessun tag</span>
                                 )}
+                            </div>
+                            <div className={styles.statusRow}>
+                                <label htmlFor={`status-${post._id}`} className={styles.statusLabel}>
+                                    Stato
+                                </label>
+                                <select
+                                    id={`status-${post._id}`}
+                                    className={styles.statusSelect}
+                                    value={post.status}
+                                    onChange={(e) => changeStatus(post._id, e.target.value)}
+                                >
+                                    <option value="draft">Bozza</option>
+                                    <option value="public">Pubblicato</option>
+                                    <option value="archived">Archiviato</option>
+                                </select>
                             </div>
 
                             <div className={styles.actions}>

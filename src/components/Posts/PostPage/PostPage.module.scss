@@ -146,3 +146,27 @@ $border: #d1d5db;
     }
   }
 }
+.page {
+  -webkit-text-size-adjust: 100%;
+}
+
+.container {
+  overflow: hidden; // evita sbordi interni visivi
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
+
+  .container {
+    max-width: 100%;
+  }
+
+  .tabsWrap {
+    :global([role="tab"]) {
+      font-size: 16px; // evita scaling/zoom strano su Safari mobile
+    }
+  }
+}

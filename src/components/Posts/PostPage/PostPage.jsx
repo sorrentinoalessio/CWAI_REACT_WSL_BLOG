@@ -4,6 +4,7 @@ import { getPost } from "../../services/post.service";
 import { useEffect, useState } from "react";
 import Loader from "../../Loader/Loader.component";
 import styles from "./PostPage.module.scss";
+import { useNavigate } from "react-router-dom";
 
 const STATUS = [
   { value: "draft", label: "Bozze" },
@@ -15,6 +16,7 @@ const PostPage = () => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
   const rawUser = localStorage.getItem("user");
   const user = rawUser ? JSON.parse(rawUser) : null;
 
@@ -37,14 +39,21 @@ const PostPage = () => {
     retrievePosts();
   }, []);
 
+  const handlePostStatusChange = (postId, newStatus) => {
+    setPosts((prev) =>
+      prev.map((p) => (p._id === postId ? { ...p, status: newStatus } : p))
+    );
+  };
+
   return (
     <div className={styles.page}>
       <section className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>I tuoi post</h1>
-          <button type="button" className={styles.addButton}>
+          <button type="button" onClick={() => navigate("/posts/addEditPost")} className={styles.addButton}>
             Aggiungi Post
           </button>
+
         </div>
 
         <div className={styles.tabsWrap}>
@@ -55,6 +64,7 @@ const PostPage = () => {
                   <PostList
                     posts={posts.filter((p) => p.status === s.value)}
                     user={user}
+                    onPostStatusChange={handlePostStatusChange}
                   />
                 ) : (
                   <Loader />

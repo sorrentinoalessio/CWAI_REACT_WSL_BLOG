@@ -5,6 +5,7 @@ import Input from "../Input/Input.component.jsx";
 import Card from "../Card/Card";
 import { Link, useNavigate } from 'react-router-dom'
 import { IoLogIn } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 
 const LoginForm = () => {
@@ -60,32 +61,55 @@ const LoginForm = () => {
                 password: formValue.password,
             });
             if (data.accessToken) {
-                localStorage.setItem("token", data.accessToken);
+                const cleanToken = String(data.accessToken).replace(/^['"]|['"]$/g, "");
+                localStorage.setItem("token", cleanToken);
                 localStorage.setItem("user", JSON.stringify(data.name));
-                navigate("/Posts");
+                navigate("/posts");
             }
-            alert("Login avvenuto: " + JSON.stringify(data));
+            toast.success("Login effettuato");
+
         } catch (error) {
             setServerError(error.message);
+            toast.error("Errore nel login");
         }
     };
 
 
     return (
-        <Card className="card" title="login">
-            <form className={styles.form} onSubmit={handleSubmit}>
-                <Input id="email" label="Indirizzo email" type="text" name="email" placeholder="Email" value={formValue.email} error={emailError} onChange={handleChange} />
-                <Input id="password" label="Password" type="password" name="password" placeholder="Password" value={formValue.password} error={passwordError} onChange={handleChange} />
-                <button type="submit" className={styles.submitButton}>
-                    <IoLogIn /> LOGIN
-                </button>
+        <div className={styles.page}>
+            <Card className="card" title="Login">
+                <form className={styles.form} onSubmit={handleSubmit}>
+                    <Input
+                        id="email"
+                        label="Indirizzo email"
+                        type="text"
+                        name="email"
+                        placeholder="Email"
+                        value={formValue.email}
+                        error={emailError}
+                        onChange={handleChange}
+                    />
+                    <Input
+                        id="password"
+                        label="Password"
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={formValue.password}
+                        error={passwordError}
+                        onChange={handleChange}
+                    />
+                    <button type="submit" className={styles.submitButton}>
+                        <IoLogIn /> LOGIN
+                    </button>
 
-                {serverError && <small>{serverError}</small>}
-                <div className={styles.RegistrationLink}>
-                    <Link to="/registration">Registrati</Link> {/* ✅ */}
-                </div>
-            </form>
-        </Card>
+                    {serverError && <small>{serverError}</small>}
+                    <div className={styles.RegistrationLink}>
+                        <Link to="/registration">Registrati</Link>
+                    </div>
+                </form>
+            </Card>
+        </div>
     );
 };
 

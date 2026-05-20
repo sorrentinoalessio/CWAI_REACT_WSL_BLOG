@@ -4,6 +4,7 @@ import RegistrationForm from './components/RegistratioForm/RegistrationForm.jsx'
 import Home from './components/Home/Home.jsx'
 import ProtectedRoutes from './components/ProtectedRoutes/ProtectedRoutes.jsx'
 import PostPage from './components/Posts/PostPage/PostPage.jsx'
+import AddEditPost from './components/Posts/AddEditPost/AddEditPost.jsx'
 
 export const routes = [
   {
@@ -15,6 +16,7 @@ export const routes = [
         children: [
           { index: true, element: <Home /> },
           { path: 'posts', element: <PostPage /> },
+          { path: 'posts/addEditPost', element: <AddEditPost /> }
         ]
       },
       { path: "login", element: <LoginForm /> },

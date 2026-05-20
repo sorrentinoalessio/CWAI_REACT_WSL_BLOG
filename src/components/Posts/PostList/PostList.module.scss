@@ -134,3 +134,23 @@
     text-align: right;
   }
 }
+.statusRow {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.statusLabel {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.statusSelect {
+  min-height: 36px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #fff;
+  color: #111827;
+}
