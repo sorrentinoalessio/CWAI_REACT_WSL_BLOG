@@ -87,7 +87,7 @@ const RegistrationForm = () => {
                         onChange={handleChange}
                     />
                 </div>
-                <small>{errors.nome}</small>
+{errors.nome && <small className={styles.errorMessage}>{errors.nome}</small>}
 
                 <div className={styles.form_field}>
                     <label htmlFor="email">Indirizzo email</label>
@@ -100,7 +100,7 @@ const RegistrationForm = () => {
                         onChange={handleChange}
                     />
                 </div>
-                <small>{errors.email}</small>
+{errors.email && <small className={styles.errorMessage}>{errors.email}</small>}
 
                 <div className={styles.form_field}>
                     <label htmlFor="password">Password</label>
@@ -113,7 +113,7 @@ const RegistrationForm = () => {
                         onChange={handleChange}
                     />
                 </div>
-                <small>{errors.password}</small>
+{errors.password && <small className={styles.errorMessage}>{errors.password}</small>}
 
                 <div className={styles.form_field}>
                     <label htmlFor="confermaPassword">Conferma password</label>
@@ -126,7 +126,7 @@ const RegistrationForm = () => {
                         onChange={handleChange}
                     />
                 </div>
-                <small>{errors.confermaPassword}</small>
+                {errors.confermaPassword && <small className={styles.errorMessage}>{errors.confermaPassword}</small>}
 
                 <button type="submit" className={styles.submit_button}>
                     Registrati

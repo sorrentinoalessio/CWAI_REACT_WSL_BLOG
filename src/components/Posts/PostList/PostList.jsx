@@ -66,6 +66,7 @@ const PostList = ({ posts = [], user, onPostStatusChange }) => {
 
     return (
         <>
+       
             <ul className={styles.list}>
                 {visiblePosts.map((post) => {
                     const comments = post.comments ?? [];

@@ -59,7 +59,7 @@ body {
   max-width: 100%;
   margin: 0 auto;
   text-align: left;
-  border-inline: 1px solid var(--border);
+  border-inline: 0px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -116,6 +116,6 @@ code {
 }
 
 [data-theme="dark"] {
-    --bg: #111111;
-    --text: #ffffff;
+    --bg: #f0f8fd;
+    --text: #0A81B8;
 }

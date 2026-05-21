@@ -3,10 +3,9 @@ import styles from "./LoginForm.module.scss";
 import { signIn } from "../services/login.service.js";
 import Input from "../Input/Input.component.jsx";
 import Card from "../Card/Card";
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from "react-router-dom";
 import { IoLogIn } from "react-icons/io5";
 import { toast } from "react-toastify";
-
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -15,7 +14,7 @@ const LoginForm = () => {
         if (localStorage.getItem("token")) {
             navigate("/");
         }
-    }, []);
+    }, [navigate]);
 
     const [formValue, setFormValue] = useState({
         email: "",
@@ -28,7 +27,7 @@ const LoginForm = () => {
     const handleChange = (e) => {
         setFormValue({
             ...formValue,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
     };
 
@@ -37,6 +36,7 @@ const LoginForm = () => {
         setEmailError("");
         setPasswordError("");
         setServerError("");
+
 
         if (!formValue.email || formValue.email.trim() === "") {
             setEmailError("Email obbligatoria");
@@ -67,7 +67,6 @@ const LoginForm = () => {
                 navigate("/posts");
             }
             toast.success("Login effettuato");
-
         } catch (error) {
             setServerError(error.message);
             toast.error("Errore nel login");
@@ -75,9 +74,18 @@ const LoginForm = () => {
     };
 
 
+    const emailOk =
+        formValue.email.trim() !== "" && formValue.email.includes("@");
+
+    const passwordOk =
+        formValue.password.trim() !== "" &&
+        formValue.password.length >= 6 &&
+        !formValue.password.includes(" ");
+
     return (
         <div className={styles.page}>
             <Card className="card" title="Login">
+                
                 <form className={styles.form} onSubmit={handleSubmit}>
                     <Input
                         id="email"
@@ -87,6 +95,7 @@ const LoginForm = () => {
                         placeholder="Email"
                         value={formValue.email}
                         error={emailError}
+                        status={emailError ? "error" : emailOk ? "success" : ""}
                         onChange={handleChange}
                     />
                     <Input
@@ -97,13 +106,14 @@ const LoginForm = () => {
                         placeholder="Password"
                         value={formValue.password}
                         error={passwordError}
+                        status={passwordError ? "error" : passwordOk ? "success" : ""}
                         onChange={handleChange}
                     />
                     <button type="submit" className={styles.submitButton}>
                         <IoLogIn /> LOGIN
                     </button>
 
-                    {serverError && <small>{serverError}</small>}
+                    {serverError && <small className={styles.errorMessage}>{serverError}</small>}
                     <div className={styles.RegistrationLink}>
                         <Link to="/registration">Registrati</Link>
                     </div>

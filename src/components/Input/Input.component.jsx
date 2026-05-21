@@ -1,10 +1,16 @@
 import FormField from "../FormField/FormField";
+import styles from "../Card/Card.module.scss";
 
-const Input = ({ id, label, error, ...props }) => {
-    return (
-        <FormField id={id} label={label} error={error}>
-            <input id={id} {...props} />
-        </FormField>
-    );
-};  
-   export default Input;            
+const Input = ({ id, label, error, status = "", ...props }) => {
+  return (
+    <FormField id={id} label={label} error={error}>
+      <input
+        id={id}
+        {...props}
+        className={`${styles.input} ${status === "error" ? styles.inputError : ""} ${status === "success" ? styles.inputSuccess : ""}`}
+      />
+    </FormField>
+  );
+};
+
+export default Input;

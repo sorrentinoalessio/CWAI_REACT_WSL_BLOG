@@ -1,12 +1,16 @@
+// FormField.component.jsx
+import styles from "./FormField.module.scss";
 
 const FormField = ({ id, label, error, children }) => {
-    return (
-        <div className="form_field">
-            <label htmlFor={id}>{label}</label>
-            {children}
-            {error && <p className="error_message">{error}</p>}
-        </div>
-    );
+  return (
+    <div className={styles.formField}>
+      <label htmlFor={id} className={styles.label}>
+        {label}
+      </label>
+      {children}
+      {error && <p className={styles.errorMessage}>{error}</p>}
+    </div>
+  );
 };
 
 export default FormField;

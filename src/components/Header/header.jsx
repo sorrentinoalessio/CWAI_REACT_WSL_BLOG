@@ -14,10 +14,10 @@ const Header = () => {
 
   return (
     <header className={styles.main_header}>
-      <h1 className={styles.title}>BlogMinute</h1>
+      <h1 className={styles.title}>Blog</h1>
 
       <div className={styles.right}>
-        <span className={styles.debug}>{token ? "LOGGATO" : "NON LOGGATO"}</span>
+        <span className={styles.debug}>{token ? "Loggato" : "Non loggato"}</span>
         {token ? (
           <button type="button" onClick={handleLogout} className={styles.auth_link}>
             Logout
