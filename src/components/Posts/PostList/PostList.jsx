@@ -98,7 +98,7 @@ const PostList = ({ posts = [], user, onPostStatusChange }) => {
                                     <span className={styles.noTags}>Nessun tag</span>
                                 )}
                             </div>
-                            <div className={styles.statusRow}>
+                                                            <div className={styles.statusRow}>
                                 <label htmlFor={`status-${post._id}`} className={styles.statusLabel}>
                                     Stato
                                 </label>
@@ -122,6 +122,7 @@ const PostList = ({ posts = [], user, onPostStatusChange }) => {
                                 >
                                     {isOpen ? "Nascondi commenti" : `Commenti (${comments.length})`}
                                 </button>
+
                                 <span className={styles.likes}>❤️ {likesCount}</span>
                             </div>
 

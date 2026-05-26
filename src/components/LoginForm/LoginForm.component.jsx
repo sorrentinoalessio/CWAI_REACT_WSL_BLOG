@@ -64,6 +64,7 @@ const LoginForm = () => {
                 const cleanToken = String(data.accessToken).replace(/^['"]|['"]$/g, "");
                 localStorage.setItem("token", cleanToken);
                 localStorage.setItem("user", JSON.stringify(data.name));
+                window.dispatchEvent(new Event("storage"));
                 navigate("/posts");
             }
             toast.success("Login effettuato");
