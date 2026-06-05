@@ -7,14 +7,13 @@
   border-bottom: 0px solid #333232;
   height: 15px;
   border-radius: 0 0 10px 10px;
-  
+  position: relative;
 }
 
 .title {
   margin: 0;
   color: #fff;
   font-size: 1.2rem;
-
 }
 
 .right {
@@ -39,17 +38,7 @@
   font-weight: 700;
   padding: 4px 6px;
 }
-.main_header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
-.right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 .nav {
   display: flex;
   gap: 1rem;
@@ -57,7 +46,6 @@
 
 .nav_link {
   text-decoration: none;
-  color: inherit;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   color: #fff;
@@ -67,3 +55,24 @@
     border-bottom: 2px solid currentColor;
   }
 }
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media (max-width : 800px) {
+    .hamburger{
+        display: block;
+      }
+
+    .rightNav {
+        display: none;
+        position: absolute;
+        right: 0;
+        width: 100%;
+      }
+};

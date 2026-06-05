@@ -6,6 +6,7 @@ import Loader from "../../Loader/Loader.component";
 import styles from "./PostPage.module.scss";
 import { useNavigate } from "react-router-dom";
 
+
 const STATUS = [
   { value: "draft", label: "Bozze" },
   { value: "public", label: "Pubblicati" },

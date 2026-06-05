@@ -1,7 +1,7 @@
 $page-bg: #f5f7fb;
 $card-bg: #ffffff;
-$primary: #1f6feb;
-$primary-hover: #195ec6;
+$primary: #0A81B8;
+$primary-hover: #D87A3A;
 $text: #111827;
 $muted: #6b7280;
 $border: #d1d5db;
@@ -76,15 +76,16 @@ $border: #d1d5db;
   :global([role="tablist"]) {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 14px;
+    gap: 3px;
+    margin-bottom: 0px;
+    align-items: center;
   }
 
   :global([role="tab"]) {
     border: 1px solid $border;
     background: #f9fafb;
     color: $text;
-    border-radius: 999px;
+    border-radius: 0px;
     padding: 8px 14px;
     font-weight: 600;
     cursor: pointer;
@@ -142,7 +143,7 @@ $border: #d1d5db;
     }
 
     :global([role="tab"]) {
-      width: 100%;
+      width: auto;
     }
   }
 }

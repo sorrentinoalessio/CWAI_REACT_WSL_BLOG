@@ -1,40 +1,24 @@
-.tab-container {
-  width: 100%;
-  margin: auto;
-}
-
-.tabs-headers {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
 .tab-button {
-  flex: 1;
-  min-width: 130px;
-  padding: 0.6rem 1rem;
+  padding: 0.5rem 1.25rem;
   border: 1px solid #d1d5db;
+  border-radius: 0px;      
+  background-color: #f9fafb;
+  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 0.95rem;
-  color: #111827; // fallback sicuro
-  text-align: center;
-  border-radius: 999px;
-  background-color: #f3f4f6;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 
-  &:hover {
-    background-color: #e5e7eb;
+  &:hover:not(.active) {
+    background-color: #f3f4f6;
+    border-color: #9ca3af;
   }
 
   &.active {
-    font-weight: 700;
-    background-color: #1f6feb;
-    color: #fff;
-    border-color: #1f6feb;
+    background-color: #6366f1;   /* sfondo pieno sull'attivo */
+    border-color: #6366f1;
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(99, 102, 241, 0.25);
   }
-}
-
-.tabs-contents {
-  color: #111827;
 }

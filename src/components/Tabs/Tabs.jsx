@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Children } from "react";
+import { useState, Children } from "react";
 import styles from "./Tabs.module.scss";
 
 export const Tabs = ({ children }) => {
@@ -13,7 +12,7 @@ export const Tabs = ({ children }) => {
       type="button"
       role="tab"
       aria-selected={activeTab === index}
-      className={`${styles["tab-button"]} ${activeTab === index ? styles.active : ""}`}
+      className={`${styles["tab-card"]} ${activeTab === index ? styles.active : ""}`}
       onClick={() => setActiveTab(index)}
     >
       {child.props.header}
@@ -32,6 +31,4 @@ export const Tabs = ({ children }) => {
   );
 };
 
-export const TabPanel = ({ children }) => {
-  return <div>{children}</div>;
-};
+export const TabPanel = ({ children }) => <div>{children}</div>;
