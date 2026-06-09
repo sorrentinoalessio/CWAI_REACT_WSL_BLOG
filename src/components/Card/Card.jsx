@@ -1,7 +1,7 @@
 import styles from "./Card.module.scss";
 
  const Card = ({title,sottotitolo, children}) => {
-    return <div className={styles.card}>
+    return <div className={styles.card} data-testid="card-component">
     <h2>{title}</h2>
     <p>{sottotitolo}</p>
     {children}

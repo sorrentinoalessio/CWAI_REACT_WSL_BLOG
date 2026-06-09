@@ -36,22 +36,25 @@ const LoginForm = () => {
         setEmailError("");
         setPasswordError("");
         setServerError("");
+        let hasError = false;
 
 
         if (!formValue.email || formValue.email.trim() === "") {
             setEmailError("Email obbligatoria");
-            return;
-        }
+            hasError = true;
+        }else
         if (!formValue.email.includes("@")) {
             setEmailError("Email non valida");
-            return;
+            hasError = true;
         }
         if (!formValue.password || formValue.password.trim() === "") {
             setPasswordError("Password obbligatoria");
-            return;
-        }
-        if (formValue.password.length < 6 || formValue.password.includes(" ")) {
+            hasError = true;
+        } else if (formValue.password.length < 6 || formValue.password.includes(" ")) {
             setPasswordError("La password deve essere lunga almeno 6 caratteri");
+            hasError = true;
+        }
+        if (hasError) {
             return;
         }
 
@@ -86,7 +89,7 @@ const LoginForm = () => {
     return (
         <div className={styles.page}>
             <Card className="card" title="Login">
-                
+
                 <form className={styles.form} onSubmit={handleSubmit}>
                     <Input
                         id="email"
@@ -98,6 +101,7 @@ const LoginForm = () => {
                         error={emailError}
                         status={emailError ? "error" : emailOk ? "success" : ""}
                         onChange={handleChange}
+                        htmlFor="email"
                     />
                     <Input
                         id="password"
@@ -109,8 +113,9 @@ const LoginForm = () => {
                         error={passwordError}
                         status={passwordError ? "error" : passwordOk ? "success" : ""}
                         onChange={handleChange}
+                        htmlFor="password"
                     />
-                    <button type="submit" className={styles.submitButton}>
+                    <button type="submit" className={styles.submitButton} name="login">
                         <IoLogIn /> LOGIN
                     </button>
 

@@ -8,7 +8,7 @@ export default defineConfig({
   },
   build: {
     commonjsOptions: {
-      transformMixedEsModules: true, // ✅ gestisce i moduli CJS come redux-persist
+      transformMixedEsModules: true,
     },
   },
   server: {
@@ -19,5 +19,10 @@ export default defineConfig({
         secure: false
       }
     }
-  }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/tests/setup.js'
+  },
 })
