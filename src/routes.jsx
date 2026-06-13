@@ -1,6 +1,6 @@
 import App from './App.jsx'
 import LoginForm from './components/LoginForm/LoginForm.component.jsx'
-import RegistrationForm from './components/RegistratioForm/RegistrationForm.jsx'
+import RegistrationForm from './components/RegistrationForm/RegistrationForm.jsx'
 import Home from './components/Home/Home.jsx'
 import ProtectedRoutes from './components/ProtectedRoutes/ProtectedRoutes.jsx'
 import PostPage from './components/Posts/PostPage/PostPage.jsx'

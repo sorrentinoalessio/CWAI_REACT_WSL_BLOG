@@ -1,8 +1,9 @@
-import { describe, it, expect, vi} from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, within, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import RegitrationForm from '../../components/RegistrationForm/RegistrationForm.component.jsx'
+import RegistrationForm from '../../components/RegistrationForm/RegistrationForm.jsx'
 import { toast } from 'react-toastify'
+
 
 const navigateMock = vi.fn()
 
@@ -10,51 +11,43 @@ vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual('react-router-dom')),
   useNavigate: () => navigateMock,
 }))
-vi.mock('../../components/services/registration.service.js', () => ({ signIn: vi.fn() }))
+vi.mock('../../components/services/registration.service.js', () => ({ signUp: vi.fn() }))
 vi.mock('react-toastify', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 
-const renderForm = () => render(<MemoryRouter><RegitrationForm /></MemoryRouter>)
+const renderForm = () => render(<MemoryRouter><RegistrationForm /></MemoryRouter>)
 
 describe('RegitrationForm success', () => {
-  it('mostra il bottone login', () => {
+  it('mostra il bottone registrati', () => {
     renderForm()
-    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /registrati/i })).toBeInTheDocument()
   })
 
-  it('contiene i campi email e password', () => {
+  it('contiene i campi name, email, password, conferma password,', () => {
     renderForm()
-    expect(screen.getByLabelText(/indirizzo email/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
+    expect(document.querySelector('input[name="nome"]')).toBeInTheDocument()
+    expect(document.querySelector('input[name="email"]')).toBeInTheDocument()
+    expect(document.querySelector('input[name="password"]')).toBeInTheDocument()
+    expect(document.querySelector('input[name="confermaPassword"]')).toBeInTheDocument()
   })
 
-  it('i campi hanno i name corretti', () => {
-    renderForm()
-    expect(screen.getByRole('textbox', { selector: 'input[name="email"]' })).toBeInTheDocument()
-    expect(screen.getByRole('textbox', { selector: 'input[name="password"]' })).toBeInTheDocument()
-  })
-
-  it('ha un link per la registrazione', () => {
-    renderForm()
-    expect(screen.getByRole('link', { name: /registrati/i })).toBeInTheDocument()
-  })
-
-  it('la card contiene un heading Login', () => {
+  it('la card contiene un heading Registrati', () => {
     renderForm()
     const card = screen.getByTestId('card-component')
-    expect(within(card).getByRole('heading', { name: /login/i })).toBeInTheDocument()
+    expect(within(card).getByRole('heading', { name: /registrati/i })).toBeInTheDocument()
   })
 
-  it('login con successo: toast, token e navigazione', async () => {
-    const { signIn } = await import('../../components/services/login.service.js')
-    signIn.mockResolvedValue({ accessToken: 'fake-token' })
+  it('registrazione con successo: toast, e navigazione', async () => {
+    const { signUp } = await import('../../components/services/registration.service.js')
     renderForm()
+    fireEvent.change(screen.getByLabelText(/nome/i), { target: { value: 'Test User' } })
     fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'test@example.com' } })
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } })
-    fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText(/^conferma password$/i), { target: { value: 'password123' } })
+    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    expect(screen.getByLabelText(/indirizzo email/i)).toHaveValue('test@example.com')
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Login effettuato')
-      expect(localStorage.getItem('token')).toBe('fake-token')
-      expect(navigateMock).toHaveBeenCalledWith('/posts')
+      expect(toast.success).toHaveBeenCalledWith('registrazione avvenuta con successo, conferma la tua email')
+      expect(navigateMock).toHaveBeenCalledWith('/login')
     })
   })
 })
@@ -62,35 +55,51 @@ describe('RegitrationForm inserimento dati non validi', () => {
   it('Email non valida', async () => {
     renderForm()
     fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'email_non_valida' } })
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } })
-    fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
-    expect(await screen.findByText(/email non valida/i)).toBeInTheDocument()
+    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    expect(await screen.findByText(/^email non valida$/i)).toBeInTheDocument()
   })
 
+  it('nome, email, password obbligatorie', async () => {
+    renderForm()
+    fireEvent.change(screen.getByLabelText(/^nome$/i), { target: { value: '' } })
+    fireEvent.change(screen.getByLabelText(/^indirizzo email$/i), { target: { value: '' } })
+    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: '' } })
+    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    expect(await screen.findByText(/^Nome obbligatorio$/i)).toBeInTheDocument()
+    expect(await screen.findByText(/^Email obbligatoria$/i)).toBeInTheDocument()
+    expect(await screen.findByText(/^Password obbligatoria$/i)).toBeInTheDocument()
+  })
+
+  it('email non valida, password non coincidente', async () => {
+    const { signUp } = await import('../../components/services/registration.service.js')
+    renderForm()
+    fireEvent.change(screen.getByLabelText(/^nome$/i), { target: { value: 'Test User' } })
+    fireEvent.change(screen.getByLabelText(/^indirizzo email$/i), { target: { value: 'testexample.com' } })
+    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText(/^conferma password$/i), { target: { value: 'password12' } })
+    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    expect(await screen.findByText(/^email non valida$/i)).toBeInTheDocument()
+    expect(await screen.findByText(/^le password non coincidono$/i)).toBeInTheDocument()
+
+  })
   it('Password troppo corta', async () => {
     renderForm()
+    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'pass' } })
+    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    expect(await screen.findByText(/^La password deve essere lunga almeno 6 caratteri$/i)).toBeInTheDocument()
+  })
+  it.only('registrazione fallita', async () => {
+    const { signUp } = await import('../../components/services/registration.service.js')
+    renderForm()
+    fireEvent.change(screen.getByLabelText(/nome/i), { target: { value: 'Test User' } })
     fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'test@example.com' } })
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'corta' } })
-    fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
-    expect(await screen.findByText(/La password deve essere lunga almeno 6 caratteri/i)).toBeInTheDocument()
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'password123' } })
+    fireEvent.change(screen.getByLabelText(/^conferma password$/i), { target: { value: 'password123' } })
+    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    expect(screen.getByLabelText(/something went wrong/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/indirizzo email/i)).toHaveValue('test@example.com')
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith('registrazione fallita')
+    })
   })
-  it('email e password vuoti mostrano errori di validazione', async () => {
-  renderForm()
-  fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
-  await waitFor(() => {
-    expect(screen.getByText(/email obbligatoria/i)).toBeInTheDocument()
-    expect(screen.getByText(/password obbligatoria/i)).toBeInTheDocument()
-  })
-})
-it('email o password sbagliate', async () => {
-  const { signIn } = await import('../../components/services/login.service.js')
-  signIn.mockRejectedValue({ response: { status: 401 } })
-  renderForm()
-  fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'test@example.com' } })
-  fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } })
-  fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
-  await waitFor(() => {
-       expect(toast.error).toHaveBeenCalledWith('Errore nel login')
-  })
-})
 });
