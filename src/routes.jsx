@@ -11,10 +11,11 @@ export const routes = [
     path: "/",
     element: <App />,
     children: [
+
+      { index: true, element: <Home /> },
       {
         element: <ProtectedRoutes />,
         children: [
-          { index: true, element: <Home /> },
           { path: 'posts', element: <PostPage /> },
           { path: 'posts/addEditPost', element: <AddEditPost /> }
         ]
