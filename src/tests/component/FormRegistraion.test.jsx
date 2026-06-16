@@ -1,9 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, within, fireEvent, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen, within, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import RegistrationForm from '../../components/RegistrationForm/RegistrationForm.jsx'
 import { toast } from 'react-toastify'
-
+import { signUp } from '../../components/services/registration.service.js'
 
 const navigateMock = vi.fn()
 
@@ -14,7 +15,11 @@ vi.mock('react-router-dom', async () => ({
 vi.mock('../../components/services/registration.service.js', () => ({ signUp: vi.fn() }))
 vi.mock('react-toastify', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 
-const renderForm = () => render(<MemoryRouter><RegistrationForm /></MemoryRouter>)
+const renderForm = () => {
+  const user = userEvent.setup()
+  render(<MemoryRouter><RegistrationForm /></MemoryRouter>)
+  return { user }
+}
 
 describe('RegitrationForm success', () => {
   it('mostra il bottone registrati', () => {
@@ -38,12 +43,14 @@ describe('RegitrationForm success', () => {
 
   it('registrazione con successo: toast, e navigazione', async () => {
     const { signUp } = await import('../../components/services/registration.service.js')
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/nome/i), { target: { value: 'Test User' } })
-    fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'test@example.com' } })
-    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'password123' } })
-    fireEvent.change(screen.getByLabelText(/^conferma password$/i), { target: { value: 'password123' } })
-    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    const { user } = renderForm()
+
+    await user.type(screen.getByLabelText(/nome/i), 'Test User')
+    await user.type(screen.getByLabelText(/indirizzo email/i), 'test@example.com')
+    await user.type(screen.getByLabelText(/^Password$/i), 'password123')
+    await user.type(screen.getByLabelText(/^conferma password$/i), 'password123')
+    await user.click(screen.getByRole('button', { name: /registrati/i }))
+
     expect(screen.getByLabelText(/indirizzo email/i)).toHaveValue('test@example.com')
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith('registrazione avvenuta con successo, conferma la tua email')
@@ -51,20 +58,19 @@ describe('RegitrationForm success', () => {
     })
   })
 })
+
 describe('RegitrationForm inserimento dati non validi', () => {
   it('Email non valida', async () => {
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'email_non_valida' } })
-    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    const { user } = renderForm()
+    await user.type(screen.getByLabelText(/indirizzo email/i), 'email_non_valida')
+    await user.click(screen.getByRole('button', { name: /registrati/i }))
     expect(await screen.findByText(/^email non valida$/i)).toBeInTheDocument()
   })
 
   it('nome, email, password obbligatorie', async () => {
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/^nome$/i), { target: { value: '' } })
-    fireEvent.change(screen.getByLabelText(/^indirizzo email$/i), { target: { value: '' } })
-    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: '' } })
-    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    const { user } = renderForm()
+    // I campi sono già vuoti, basta cliccare submit
+    await user.click(screen.getByRole('button', { name: /registrati/i }))
     expect(await screen.findByText(/^Nome obbligatorio$/i)).toBeInTheDocument()
     expect(await screen.findByText(/^Email obbligatoria$/i)).toBeInTheDocument()
     expect(await screen.findByText(/^Password obbligatoria$/i)).toBeInTheDocument()
@@ -72,34 +78,39 @@ describe('RegitrationForm inserimento dati non validi', () => {
 
   it('email non valida, password non coincidente', async () => {
     const { signUp } = await import('../../components/services/registration.service.js')
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/^nome$/i), { target: { value: 'Test User' } })
-    fireEvent.change(screen.getByLabelText(/^indirizzo email$/i), { target: { value: 'testexample.com' } })
-    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'password123' } })
-    fireEvent.change(screen.getByLabelText(/^conferma password$/i), { target: { value: 'password12' } })
-    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    const { user } = renderForm()
+
+    await user.type(screen.getByLabelText(/^nome$/i), 'Test User')
+    await user.type(screen.getByLabelText(/^indirizzo email$/i), 'testexample.com')
+    await user.type(screen.getByLabelText(/^password$/i), 'password123')
+    await user.type(screen.getByLabelText(/^conferma password$/i), 'password12')
+    await user.click(screen.getByRole('button', { name: /registrati/i }))
+
     expect(await screen.findByText(/^email non valida$/i)).toBeInTheDocument()
     expect(await screen.findByText(/^le password non coincidono$/i)).toBeInTheDocument()
-
   })
+
   it('Password troppo corta', async () => {
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/^password$/i), { target: { value: 'pass' } })
-    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
+    const { user } = renderForm()
+    await user.type(screen.getByLabelText(/^password$/i), 'pass')
+    await user.click(screen.getByRole('button', { name: /registrati/i }))
     expect(await screen.findByText(/^La password deve essere lunga almeno 6 caratteri$/i)).toBeInTheDocument()
   })
-  it.only('registrazione fallita', async () => {
-    const { signUp } = await import('../../components/services/registration.service.js')
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/nome/i), { target: { value: 'Test User' } })
-    fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'test@example.com' } })
-    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'password123' } })
-    fireEvent.change(screen.getByLabelText(/^conferma password$/i), { target: { value: 'password123' } })
-    fireEvent.submit(screen.getByRole('button', { name: /registrati/i }).closest('form'))
-    expect(screen.getByLabelText(/something went wrong/i)).toBeInTheDocument()
+
+  it('registrazione fallita', async () => {
+   signUp.mockRejectedValueOnce(new Error('something went wrong')) // Simula un errore del server
+    const { user } = renderForm()
+
+    await user.type(screen.getByLabelText(/nome/i), 'Test User')
+    await user.type(screen.getByLabelText(/indirizzo email/i), 'test@example.com')
+    await user.type(screen.getByLabelText(/^Password$/i), 'password123')
+    await user.type(screen.getByLabelText(/^conferma password$/i), 'password123')
+    await user.click(screen.getByRole('button', { name: /registrati/i }))
+
+    expect(await screen.findByText(/something went wrong/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/indirizzo email/i)).toHaveValue('test@example.com')
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('registrazione fallita')
+      expect(toast.error).toHaveBeenCalledWith('registrazione fallita')
     })
   })
-});
+})

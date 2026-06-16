@@ -1,5 +1,6 @@
-import { describe, it, expect, vi} from 'vitest'
-import { render, screen, within, fireEvent, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen, within, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import LoginForm from '../../components/LoginForm/LoginForm.component.jsx'
 import { toast } from 'react-toastify'
@@ -13,7 +14,11 @@ vi.mock('react-router-dom', async () => ({
 vi.mock('../../components/services/login.service.js', () => ({ signIn: vi.fn() }))
 vi.mock('react-toastify', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 
-const renderForm = () => render(<MemoryRouter><LoginForm /></MemoryRouter>)
+const renderForm = () => {
+  const user = userEvent.setup()
+  render(<MemoryRouter><LoginForm /></MemoryRouter>)
+  return { user }
+}
 
 describe('LoginForm success', () => {
   it('mostra il bottone login', () => {
@@ -21,16 +26,11 @@ describe('LoginForm success', () => {
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument()
   })
 
-  it('contiene i campi email e password', () => {
-    renderForm()
-    expect(screen.getByLabelText(/indirizzo email/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
-  })
-
+  
   it('i campi hanno i name corretti', () => {
     renderForm()
-    expect(screen.getByRole('textbox', { selector: 'input[name="email"]' })).toBeInTheDocument()
-    expect(screen.getByRole('textbox', { selector: 'input[name="password"]' })).toBeInTheDocument()
+    expect(document.querySelector('input[name="email"]')).toBeInTheDocument()
+    expect(document.querySelector('input[name="password"]')).toBeInTheDocument()
   })
 
   it('ha un link per la registrazione', () => {
@@ -47,10 +47,12 @@ describe('LoginForm success', () => {
   it('login con successo: toast, token e navigazione', async () => {
     const { signIn } = await import('../../components/services/login.service.js')
     signIn.mockResolvedValue({ accessToken: 'fake-token' })
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'test@example.com' } })
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } })
-    fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
+    const { user } = renderForm()
+
+    await user.type(screen.getByLabelText(/indirizzo email/i), 'test@example.com')
+    await user.type(screen.getByLabelText(/password/i), 'password123')
+    await user.click(screen.getByRole('button', { name: /login/i }))
+
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith('Login effettuato')
       expect(localStorage.getItem('token')).toBe('fake-token')
@@ -58,39 +60,44 @@ describe('LoginForm success', () => {
     })
   })
 })
+
 describe('LoginForm inserimento dati non validi', () => {
   it('Email non valida', async () => {
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'email_non_valida' } })
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } })
-    fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
+    const { user } = renderForm()
+    await user.type(screen.getByLabelText(/indirizzo email/i), 'email_non_valida')
+    await user.type(screen.getByLabelText(/password/i), 'password123')
+    await user.click(screen.getByRole('button', { name: /login/i }))
     expect(await screen.findByText(/email non valida/i)).toBeInTheDocument()
   })
 
   it('Password troppo corta', async () => {
-    renderForm()
-    fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'test@example.com' } })
-    fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'corta' } })
-    fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
+    const { user } = renderForm()
+    await user.type(screen.getByLabelText(/indirizzo email/i), 'test@example.com')
+    await user.type(screen.getByLabelText(/password/i), 'corta')
+    await user.click(screen.getByRole('button', { name: /login/i }))
     expect(await screen.findByText(/La password deve essere lunga almeno 6 caratteri/i)).toBeInTheDocument()
   })
+
   it('email e password vuoti mostrano errori di validazione', async () => {
-  renderForm()
-  fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
-  await waitFor(() => {
-    expect(screen.getByText(/email obbligatoria/i)).toBeInTheDocument()
-    expect(screen.getByText(/password obbligatoria/i)).toBeInTheDocument()
+    const { user } = renderForm()
+    await user.click(screen.getByRole('button', { name: /login/i }))
+    await waitFor(() => {
+      expect(screen.getByText(/email obbligatoria/i)).toBeInTheDocument()
+      expect(screen.getByText(/password obbligatoria/i)).toBeInTheDocument()
+    })
+  })
+
+  it('email o password sbagliate', async () => {
+    const { signIn } = await import('../../components/services/login.service.js')
+    signIn.mockRejectedValue({ response: { status: 401 } })
+    const { user } = renderForm()
+
+    await user.type(screen.getByLabelText(/indirizzo email/i), 'test@example.com')
+    await user.type(screen.getByLabelText(/password/i), 'password123')
+    await user.click(screen.getByRole('button', { name: /login/i }))
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Errore nel login')
+    })
   })
 })
-it('email o password sbagliate', async () => {
-  const { signIn } = await import('../../components/services/login.service.js')
-  signIn.mockRejectedValue({ response: { status: 401 } })
-  renderForm()
-  fireEvent.change(screen.getByLabelText(/indirizzo email/i), { target: { value: 'test@example.com' } })
-  fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'password123' } })
-  fireEvent.submit(screen.getByRole('button', { name: /login/i }).closest('form'))
-  await waitFor(() => {
-       expect(toast.error).toHaveBeenCalledWith('Errore nel login')
-  })
-})
-});
