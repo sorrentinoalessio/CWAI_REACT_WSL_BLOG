@@ -130,7 +130,7 @@
 <span class="cstat-no" title="statement not covered" >  if (!token) <span class="cstat-no" title="statement not covered" >throw new Error("Utente non autenticato");</span></span>
 &nbsp;
   const response = <span class="cstat-no" title="statement not covered" >await fetch(</span>
-    `https://alessio-be.longwavestudio.dev/user/post/update/${postId}`,
+    `http://127.0.0.1:3001/user/post/update/${postId}`,
     {
       method: "PATCH",
       headers: {

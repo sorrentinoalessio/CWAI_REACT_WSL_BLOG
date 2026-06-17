@@ -1,14 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./LoginForm.module.scss";
 import { signIn } from "../services/login.service.js";
 import Input from "../Input/Input.component.jsx";
 import Card from "../Card/Card";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { IoLogIn } from "react-icons/io5";
 import { toast } from "react-toastify";
 
+
+
 const LoginForm = () => {
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const hasShownToast = useRef(false);
+
+    useEffect(() => {
+        if (hasShownToast.current) return;
+        hasShownToast.current = true;
+        const confirmed = searchParams.get('confirmed');
+        console.log(confirmed);
+        if (confirmed === 'true') {
+            setTimeout(() => toast.success('Conferma avvenuta. Registrazione completata!'), 0);
+            navigate('/login', { replace: true });
+        } else if (confirmed === 'false') {
+            setTimeout(() => toast.error(searchParams.get('message') || 'Errore durante la conferma.'), 0);
+            navigate('/login', { replace: true });
+        }
+    }, []);
+
 
     useEffect(() => {
         if (localStorage.getItem("token")) {
@@ -42,11 +61,11 @@ const LoginForm = () => {
         if (!formValue.email || formValue.email.trim() === "") {
             setEmailError("Email obbligatoria");
             hasError = true;
-        }else
-        if (!formValue.email.includes("@")) {
-            setEmailError("Email non valida");
-            hasError = true;
-        }
+        } else
+            if (!formValue.email.includes("@")) {
+                setEmailError("Email non valida");
+                hasError = true;
+            }
         if (!formValue.password || formValue.password.trim() === "") {
             setPasswordError("Password obbligatoria");
             hasError = true;

@@ -2,7 +2,7 @@ export const createPost = async (postData) => {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("Utente non autenticato");
 
-  const response = await fetch("https://alessio-be.longwavestudio.dev/user/post/create", {
+  const response = await fetch("http://127.0.0.1:3001/user/post/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

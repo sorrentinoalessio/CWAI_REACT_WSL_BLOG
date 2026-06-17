@@ -3,7 +3,7 @@ export const getPostPublic = async () => {
   const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 secondi
 
   try {
-    const response = await fetch("https://alessio-be.longwavestudio.dev/post/", {
+    const response = await fetch("http://127.0.0.1:3001/post/", {
       method: "GET",
       signal: controller.signal,
     });

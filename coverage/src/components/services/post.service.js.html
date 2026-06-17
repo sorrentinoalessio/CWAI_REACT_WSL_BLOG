@@ -174,7 +174,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export const getPost = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >async (t</span>oken) =&gt; {</span>
   const cleanToken = <span class="cstat-no" title="statement not covered" >token?.replace(/^['"]|['"]$/g, "");</span>
 &nbsp;
-  const response = <span class="cstat-no" title="statement not covered" >await fetch("https://alessio-be.longwavestudio.dev/user/post/", {</span>
+  const response = <span class="cstat-no" title="statement not covered" >await fetch("http://127.0.0.1:3001/user/post/", {</span>
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -202,7 +202,7 @@ export const updatePostStatus = <span class="cstat-no" title="statement not cove
 <span class="cstat-no" title="statement not covered" >  if (!token) <span class="cstat-no" title="statement not covered" >throw new Error("Utente non autenticato");</span></span>
 &nbsp;
   const response = <span class="cstat-no" title="statement not covered" >await fetch(</span>
-    `https://alessio-be.longwavestudio.dev/user/post/update/${postId}`,
+    `http://127.0.0.1:3001/user/post/update/${postId}`,
     {
       method: "PATCH",
       headers: {

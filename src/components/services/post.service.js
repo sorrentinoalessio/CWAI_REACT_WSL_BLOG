@@ -1,7 +1,7 @@
 export const getPost = async (token) => {
   const cleanToken = token?.replace(/^['"]|['"]$/g, "");
 
-  const response = await fetch("https://alessio-be.longwavestudio.dev/user/post/", {
+  const response = await fetch("http://127.0.0.1:3001/user/post/", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export const updatePostStatus = async (postId, payload) => {
   if (!token) throw new Error("Utente non autenticato");
 
   const response = await fetch(
-    `https://alessio-be.longwavestudio.dev/user/post/update/${postId}`,
+    `http://127.0.0.1:3001/user/post/update/${postId}`,
     {
       method: "PATCH",
       headers: {

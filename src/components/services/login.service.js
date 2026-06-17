@@ -1,6 +1,6 @@
 export const signIn = async (signUpData) => {
     try {
-        const response = await fetch('https://alessio-be.longwavestudio.dev/user/login', {
+        const response = await fetch('http://127.0.0.1:3001/user/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

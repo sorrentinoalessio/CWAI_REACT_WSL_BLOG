@@ -117,7 +117,7 @@
   const token = <span class="cstat-no" title="statement not covered" >localStorage.getItem("token");</span>
 <span class="cstat-no" title="statement not covered" >  if (!token) <span class="cstat-no" title="statement not covered" >throw new Error("Utente non autenticato");</span></span>
 &nbsp;
-  const response = <span class="cstat-no" title="statement not covered" >await fetch("https://alessio-be.longwavestudio.dev/user/post/create", {</span>
+  const response = <span class="cstat-no" title="statement not covered" >await fetch("http://127.0.0.1:3001/user/post/create", {</span>
     method: "POST",
     headers: {
       "Content-Type": "application/json",
