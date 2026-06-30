@@ -1,17 +1,18 @@
 $card-bg: #ffffff;
-$primary: #0A81B8;
+$primary: #03141B;
 $primary-hover: #D87A3A;
 $text: #0A81B8;
-$muted: #6b7280;
+$muted: #053085;
 $border: #d1d5db;
 $focus: rgba(31, 111, 235, 0.2);
 $danger: #b42318;
 $danger-border: #fda29b;
 $danger-focus: rgba(85, 25, 11, 0.2);
 
+
 .card {
   width: 100%;
-  max-width: 420px;
+  max-width: 720px;
   margin-inline: auto;
   background: $card-bg;
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -22,6 +23,12 @@ $danger-focus: rgba(85, 25, 11, 0.2);
   overflow: hidden;
   margin-bottom: 15px;
   margin-top: 15px;
+
+  h1{
+    margin: 0 0 12px;
+    font-size: clamp(1.5rem, 3vw, 1.75rem);
+    color: #03141B;
+  }
 
   h2 {
     margin: 0 0 6px;

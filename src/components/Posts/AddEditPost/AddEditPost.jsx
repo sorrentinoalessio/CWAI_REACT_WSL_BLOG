@@ -5,9 +5,11 @@ import styles from "./AddEditPost.module.scss";
 
 import { createPost } from "../../services/addPost.service.js";
 import { toast } from "react-toastify";
+import { useAuth } from "@/hooks/useAuth";
 
 const AddEditPost = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     const [form, setForm] = useState({
         title: "",
@@ -65,7 +67,7 @@ const AddEditPost = () => {
         console.log("PAYLOAD", payload);
 
         try {
-            await createPost(payload);
+            await createPost(payload, user.accessToken);
             toast.success("Post creato con successo");
             navigate("/posts");
         } catch (err) {

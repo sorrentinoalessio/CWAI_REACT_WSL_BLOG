@@ -1,5 +1,4 @@
-export const createPost = async (postData) => {
-  const token = localStorage.getItem("token");
+export const createPost = async (postData, token) => {
   if (!token) throw new Error("Utente non autenticato");
 
   const response = await fetch("http://127.0.0.1:3001/user/post/create", {

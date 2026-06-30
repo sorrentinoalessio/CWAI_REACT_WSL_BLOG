@@ -23,7 +23,7 @@ const PostList = ({ posts = [], user, onPostStatusChange }) => {
     );
 
     try {
-      await updatePostStatus(postId, { status: newStatus });
+      await updatePostStatus(postId, { status: newStatus }, user.accessToken);
       onPostStatusChange?.(postId, newStatus); // <- aggiorna anche stato in PostPage
       toast.success("Stato aggiornato");
     } catch (err) {
@@ -66,7 +66,6 @@ const PostList = ({ posts = [], user, onPostStatusChange }) => {
 
     return (
         <>
-       
             <ul className={styles.list}>
                 {visiblePosts.map((post) => {
                     const comments = post.comments ?? [];
@@ -98,7 +97,7 @@ const PostList = ({ posts = [], user, onPostStatusChange }) => {
                                     <span className={styles.noTags}>Nessun tag</span>
                                 )}
                             </div>
-                                                            <div className={styles.statusRow}>
+                            <div className={styles.statusRow}>
                                 <label htmlFor={`status-${post._id}`} className={styles.statusLabel}>
                                     Stato
                                 </label>

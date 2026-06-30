@@ -6,12 +6,13 @@ import Card from "../Card/Card";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { IoLogIn } from "react-icons/io5";
 import { toast } from "react-toastify";
-
-
+import { useDispatch } from "react-redux";
+import { setUser } from "@/reducers/user.slice";
 
 const LoginForm = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const hasShownToast = useRef(false);
 
     useEffect(() => {
@@ -27,13 +28,6 @@ const LoginForm = () => {
             navigate('/login', { replace: true });
         }
     }, []);
-
-
-    useEffect(() => {
-        if (localStorage.getItem("token")) {
-            navigate("/");
-        }
-    }, [navigate]);
 
     const [formValue, setFormValue] = useState({
         email: "",
@@ -57,15 +51,13 @@ const LoginForm = () => {
         setServerError("");
         let hasError = false;
 
-
         if (!formValue.email || formValue.email.trim() === "") {
             setEmailError("Email obbligatoria");
             hasError = true;
-        } else
-            if (!formValue.email.includes("@")) {
-                setEmailError("Email non valida");
-                hasError = true;
-            }
+        } else if (!formValue.email.includes("@")) {
+            setEmailError("Email non valida");
+            hasError = true;
+        }
         if (!formValue.password || formValue.password.trim() === "") {
             setPasswordError("Password obbligatoria");
             hasError = true;
@@ -84,9 +76,11 @@ const LoginForm = () => {
             });
             if (data.accessToken) {
                 const cleanToken = String(data.accessToken).replace(/^['"]|['"]$/g, "");
-                localStorage.setItem("token", cleanToken);
-                localStorage.setItem("user", JSON.stringify(data.name));
-                window.dispatchEvent(new Event("storage"));
+                dispatch(setUser({
+                    name: data.name,
+                    accessToken: cleanToken,
+                    refreshToken: data.refreshToken,
+                }));
                 navigate("/posts");
             }
             toast.success("Login effettuato");
@@ -95,7 +89,6 @@ const LoginForm = () => {
             toast.error("Errore nel login");
         }
     };
-
 
     const emailOk =
         formValue.email.trim() !== "" && formValue.email.includes("@");
@@ -108,7 +101,6 @@ const LoginForm = () => {
     return (
         <div className={styles.page}>
             <Card className="card" title="Login">
-
                 <form className={styles.form} onSubmit={handleSubmit}>
                     <Input
                         id="email"

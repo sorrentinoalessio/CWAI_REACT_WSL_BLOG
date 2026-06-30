@@ -3,15 +3,15 @@ import { useContext } from 'react';
 import Card from '../Card/Card';
 import { ThemeContext } from '../../contexts/ThemeProvider';
 import PublicPosts from '../Posts/PostPublicList/PostPublicList';
+import { useAuth } from "@/hooks/useAuth";
 
 const Home = () => {
   const { theme, switchTheme } = useContext(ThemeContext); // tieni solo se li usi
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    logout();
     navigate("/login");
   };
 

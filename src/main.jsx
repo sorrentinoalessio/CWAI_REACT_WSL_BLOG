@@ -4,6 +4,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { routes } from './routes.jsx';
 import { ThemeProvider } from './contexts/ThemeProvider.jsx';
+import { SocketProvider } from './socket/SocketProvider.jsx';
 import { Provider } from 'react-redux';
 import { store, persistor } from './store/store.js';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -16,8 +17,8 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
       <Provider store={store}>
-        <PersistGate persistor={persistor}>
-          <>
+        <PersistGate persistor={persistor} loading={null}>
+          <SocketProvider>
             <RouterProvider router={router} />
             <ToastContainer
               position="bottom-center"
@@ -28,7 +29,7 @@ createRoot(document.getElementById('root')).render(
               theme="light"
               style={{ zIndex: 99999 }}
             />
-          </>
+          </SocketProvider>
         </PersistGate>
       </Provider>
     </ThemeProvider>

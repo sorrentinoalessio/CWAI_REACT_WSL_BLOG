@@ -1,41 +1,22 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate, NavLink ,useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Header.module.scss";
-
+import { useAuth } from "@/hooks/useAuth";
 
 const Header = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
-
-    useEffect(() => {
-        setIsLoggedIn(!!localStorage.getItem("token"));
-    }, [location]); // aggiorna stato login quando cambia percorso (es. dopo logout)
-
-    useEffect(() => {
-        const onStorage = (e) => {
-            if (e.key === "token") setIsLoggedIn(!!e.newValue);
-        };
-        window.addEventListener("storage", onStorage);
-        return () => window.removeEventListener("storage", onStorage);
-    }, []);
+    const { isAuthenticated, logout } = useAuth();
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setIsLoggedIn(false);
+        logout();
         navigate("/login");
     };
-
 
     return (
         <header className={styles.main_header}>
             <h1 className={styles.title}>Blog</h1>
-            
-            
-            <div className={styles.right}>
 
-                {isLoggedIn ? (
+            <div className={styles.right}>
+                {isAuthenticated ? (
                     <button type="button" onClick={handleLogout} className={styles.auth_link}>
                         Esci
                     </button>

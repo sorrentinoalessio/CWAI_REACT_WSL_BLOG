@@ -1,11 +1,12 @@
 import { TabPanel, Tabs } from "../../Tabs/Tabs";
 import PostList from "../PostList/PostList";
-import { getPost } from "../../services/post.service";
+import { useSocketEmit } from "@/socket/useSocketEmit";
 import { useEffect, useState } from "react";
 import Loader from "../../Loader/Loader.component";
 import styles from "./PostPage.module.scss";
 import { useNavigate } from "react-router-dom";
-
+import { useAuth } from "@/hooks/useAuth";
+import { useSocket } from "@/socket/SocketContext";
 
 const STATUS = [
   { value: "draft", label: "Bozze" },
@@ -18,27 +19,34 @@ const PostPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const rawUser = localStorage.getItem("user");
-  const user = rawUser ? JSON.parse(rawUser) : null;
+  const { user } = useAuth();
+  const { connected } = useSocket();
+  const { listPosts } = useSocketEmit();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!connected) return;
+
+    let cancelled = false;
 
     const retrievePosts = async () => {
       setIsLoading(true);
       try {
-        const data = await getPost(token);
-        setPosts(data);
+        const data = await listPosts();
+        if (!cancelled) setPosts(data ?? []);
       } catch (error) {
         console.error("Errore nel recupero dei post:", error);
+        if (!cancelled) setPosts([]);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     };
 
     retrievePosts();
-  }, []);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [connected]);
 
   const handlePostStatusChange = (postId, newStatus) => {
     setPosts((prev) =>
@@ -54,7 +62,6 @@ const PostPage = () => {
           <button type="button" onClick={() => navigate("/posts/addEditPost")} className={styles.addButton}>
             Aggiungi Post
           </button>
-
         </div>
 
         <div className={styles.tabsWrap}>

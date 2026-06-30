@@ -1,7 +1,4 @@
-export const updatePostStatus = async (postId, payload) => {
-  const tokenRaw = localStorage.getItem("token");
-  const token = tokenRaw?.replace(/^['"]|['"]$/g, "");
-
+export const updatePostStatus = async (postId, payload, token) => {
   if (!token) throw new Error("Utente non autenticato");
 
   const response = await fetch(
